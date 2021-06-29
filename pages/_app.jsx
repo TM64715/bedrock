@@ -3,6 +3,7 @@
 import React from 'react';
 import Head from 'next/head';
 import 'tailwindcss/tailwind.css';
+import { UserProvider } from '../components/user-context';
 
 function App({ Component, pageProps }) {
   return (
@@ -10,8 +11,10 @@ function App({ Component, pageProps }) {
       <Head>
         <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
       </Head>
-      <div className="overflow-x-hidden">
-        <Component {...pageProps} />
+      <div className="overflow-x-hidden font-sans">
+        <UserProvider>
+          <Component {...pageProps} />
+        </UserProvider>
       </div>
     </>
   );

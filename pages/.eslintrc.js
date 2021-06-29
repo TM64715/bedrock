@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    node: true,
   },
   extends: [
     'plugin:react/recommended',
@@ -19,6 +20,13 @@ module.exports = {
   ],
   rules: {
     'react/prop-types': 'off',
-
+    'no-underscore-dangle': [
+      'error',
+      {
+        allow: [
+          '_id',
+        ],
+      },
+    ],
   },
 };

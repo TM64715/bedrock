@@ -2,8 +2,18 @@ Bedrock:
   ✔ Start Project :) @done(21-06-26 14:06)
   ✔ Set up Rebass @today @started(21-06-26 14:26) @done(21-06-26 16:45) @lasted(2h19m25s)
   ✔ Create Landing Page @low @today @started(21-06-26 15:45) @done(21-06-26 17:53) @lasted(2h8m54s)
-  - Create Auth System @high
-    - Make Page 
-    - Connect to API
-  - Create Button Component @today
-  - Create Input Component
+  ✔ Create Auth System: @high @done(21-06-27 23:31)
+     ✔ Make Page @done(21-06-27 23:31)
+     ✔ Connect to API @done(21-06-27 23:31)
+  ✔ Create Button Component @today @done(21-06-27 23:31)
+  ✔ Create Input Component @done(21-06-27 23:31)
+  - Dashboard
+    ✘ Create user context @cancelled(21-06-28 18:56)
+    //Doesn't persist on reload used `getServerSideProps` instead
+    ✔ Write HTML @done(21-06-28 18:56)
+    ✔ Use actual data @done(21-06-28 18:57)
+    - Add friends feature 
+Bedrock Backend:
+  - Move back to serverless @started(21-06-28 21:34)
+  - Establish a matchmaking feature
+  - Maintain sessions/study halls
