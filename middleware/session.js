@@ -1,15 +1,17 @@
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import { connectToDatabase } from '../util/db';
 
 
 
-export default function sessionMiddleware(req, res, next) {
+export default async function sessionMiddleware(req, res, next) {
+  const conn = await connectToDatabase();
   return session({
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     resave: true,
-    store: new MongoStore({
-      mongoUrl: process.env.BEDROCK_DB_URI,
+    store: MongoStore.create({
+      client: await conn.client,
       collectionName: 'sessions'
     })
   })(req, res, next);

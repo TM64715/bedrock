@@ -3,7 +3,7 @@ let users;
 import 'mongodb'
 import { ObjectId } from 'mongodb';
 import {genHash} from '../service/encrypt.service';
-
+import { connectToDatabase } from '../util/db';
 export default class UsersDAO {
 
   static async injectDB(conn) {
@@ -26,16 +26,18 @@ export default class UsersDAO {
      * 
      */
     
-    static async findOrCreate(db, userInfo){
+    static async findOrCreate(userInfo){
+      const { db } = await connectToDatabase()
       users = db.collection('users');
-      const {googleId, displayName, username, password} = userInfo
-      await users.updateOne({googleId: googleId,}, {$set: {googleId: googleId, username: displayName}}, {upsert: true});
+      const {zoomId, name, accessToken, refreshToken, admin } = userInfo
+      await users.updateOne({zoomId}, {$set: {zoomId, name, accessToken, refreshToken, admin}}, {upsert: true});
       try {
-          let result = await users.findOne({googleId: googleId})
-          return({error: null, result: result});
+          let result = await users.findOne({zoomId})
+          return({error: null, result});
       }
       catch (e) {
           let error = "An error occured while finding document: " + e.toString();
+          console.error(error);
           return({error: error, result: null});
       }
     }
@@ -45,12 +47,13 @@ export default class UsersDAO {
      * @returns {DAOResponse} 
      */
 
-    static async createUser(db, userInfo) {
+    static async createUser(userInfo) {
+      const { db } = await connectToDatabase()
       users = db.collection('users');
-        const {email, name, password} = userInfo;
+        const {email, name, password, type} = userInfo;
         try {
             let {hash} = await genHash(password);
-            let result = await users.insertOne({name, email, hash})
+            let result = await users.insertOne({name, email, hash, type})
             return({error: null, result: result})
         }
         catch (e) {
@@ -61,7 +64,8 @@ export default class UsersDAO {
      * @param {String} id - id of a user
      * @returns {DAOResponse} Returns an error or a document
     */
-    static async findById(db, id) {
+    static async findById(id) {
+      const { db } = await connectToDatabase()
       users = db.collection('users');
         try {
             let doc = await users.findOne({_id: ObjectId(id)})
@@ -76,7 +80,8 @@ export default class UsersDAO {
      * @returns {DAOResponse}
     */
 
-    static async findByEmail(db, email) {
+    static async findByEmail(email) {
+      const { db } = await connectToDatabase()
       users = db.collection('users');
         try {
             let doc = await users.findOne({email})
@@ -90,7 +95,8 @@ export default class UsersDAO {
      * @returns {DAOResponse}
      */
 
-    static async deleteUser(db, UserInfo) {
+    static async deleteUser(UserInfo) {
+      const { db } = await connectToDatabase()
       users = db.collection('users');
         try {
             const { _id:id } = UserInfo

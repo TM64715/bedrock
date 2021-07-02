@@ -1,6 +1,9 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import Image from 'next/image';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 import BoxSelect from '../components/boxSelect';
 import Input from '../components/input';
 import { all } from '../middleware/index';
@@ -11,11 +14,23 @@ import HS from '../public/school.svg';
 import college from '../public/college.svg';
 
 function Dashboard({ user }) {
-  const [courseLevel, setCourseLevel] = React.useState('');
+  const router = useRouter();
+  const [courseLevel, setCourseLevel] = React.useState('High School');
+  const [course, setCourse] = React.useState('');
+  const [sessionLength, setSessionLength] = React.useState('');
+  const [tags, setTags] = React.useState('');
   const courseHandler = (e, c) => {
     e.preventDefault();
     setCourseLevel(c);
   };
+  const joinSession = async (e) => {
+    e.preventDefault();
+    const { data: { result: { _id: roomId, meetingId } } } = await axios.post('../api/match', {
+      courseLevel, course, sessionLength, tags: tags.split(','),
+    });
+    if (roomId) router.push(`../room/${roomId}?meetingId=${meetingId}`);
+  };
+
   return (
     <>
       <div className="flex items-center justify-between w-full pr-16 mt-8 pl-7">
@@ -23,7 +38,7 @@ function Dashboard({ user }) {
         <div className="flex flex-row items-center space-x-4">
           <p>{user.name}</p>
           <div className="rounded-full">
-            <Image src={profilePic} height={50} width={50} blur />
+            <Image src={profilePic} height={50} width={50} placeholder="blur" />
           </div>
         </div>
       </div>
@@ -48,14 +63,14 @@ function Dashboard({ user }) {
 
             </label>
             <div className="w-11/12 mt-5 space-y-5 ">
-              <Input label="What's the name of your class?" id="class" />
-              <Input label="How long do you want to work for?" id="sessionLength" />
+              <Input required label="What's the name of your class?" id="class" onChange={(e) => setCourse(e.target.value)} value={course} />
+              <Input required label="How long do you want to work for?" id="sessionLength" onChange={(e) => setSessionLength(e.target.value)} value={sessionLength} />
               <div>
                 <label htmlFor="tags" className="">
                   Please List Some Tags
                 </label>
                 <div className="flex w-3/4 space-x-3">
-                  <textarea id="tags" className="w-full h-20 px-4 py-2 mt-2 text-sm border border-black rounded-md focus:outline-none" placeholder="QuizMe, cram, homework, concepts, science" draggable={false} />
+                  <textarea required id="tags" className="w-full h-20 px-4 py-2 mt-2 text-sm border border-black rounded-md focus:outline-none" placeholder="QuizMe, cram, homework, concepts, science" draggable={false} onChange={(e) => setTags(e.target.value)} value={tags} />
                   <p className="text-sm text-gray-800">
                     Think of tags as hashtags, we’ll use them to
                     find a more relevant partner for you.
@@ -65,7 +80,7 @@ function Dashboard({ user }) {
                   </p>
                 </div>
               </div>
-              <button className="block mx-auto btn btn-indigo" type="button">Join Study Hall</button>
+              <button className="block mx-auto btn btn-indigo" type="submit" onClick={joinSession}>Join Study Hall</button>
             </div>
 
           </form>
@@ -86,10 +101,11 @@ export async function getServerSideProps(context) {
       },
     };
   }
-  const { email, name } = context.req.user;
+  // eslint-disable-next-line prefer-const
+  let { name } = context.req.user;
   return {
     props: {
-      user: { email, name },
+      user: { name },
     }, // will be passed to the page component as props
   };
 }
