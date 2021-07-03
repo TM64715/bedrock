@@ -25,10 +25,10 @@ function Dashboard({ user }) {
   };
   const joinSession = async (e) => {
     e.preventDefault();
-    const { data: { result: { _id: roomId, meetingId } } } = await axios.post('../api/match', {
+    const { data: { result: { _id: id } } } = await axios.post('../api/match', {
       courseLevel, course, sessionLength, tags: tags.split(','),
     });
-    if (roomId) router.push(`../room/${roomId}?meetingId=${meetingId}`);
+    if (id) router.push(`../room/${id}`);
   };
 
   return (

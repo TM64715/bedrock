@@ -19,10 +19,10 @@ class roomsDAO {
   static async create(data) {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
-    const { users, meetingId, password, extra} = data;
+    const { users, meetingId, url, name} = data;
     if (!Array.isArray(users)) return {error: "users must be an array", data: null}
     try {
-    const result = await rooms.insertOne({users, meetingId, extra, password});
+    const result = await rooms.insertOne({users, meetingId, url, name});
     return({error: null, result});
     } catch (e) {
       return ({error: e.toString(), result: null})
@@ -56,6 +56,16 @@ class roomsDAO {
     rooms = db.collection('rooms');
     try {
     const result = await rooms.findOne({_id: new ObjectId(id)});
+    return ({error: null, result});
+    } catch (e) {
+      return ({error: e.toString(), result: null})    
+    }
+  }
+  static async archive(id) {
+    const { db } = await connectToDatabase();
+    rooms = db.collection('rooms');
+    try {
+    const result = await rooms.updateOne({_id: new ObjectId(id)}, {$set: {archived: true}});
     return ({error: null, result});
     } catch (e) {
       return ({error: e.toString(), result: null})    

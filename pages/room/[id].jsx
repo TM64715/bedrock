@@ -1,76 +1,65 @@
-import React, { useEffect } from 'react';
-import { generateSignature } from '../../lib/api-helpers';
-import { all } from '../../middleware';
+import React, { useRef } from 'react';
+import DailyIframe from '@daily-co/daily-js';
 import roomsDAO from '../../dao/roomsDAO';
 
-const Room = ({
-  meetingId, signature, name, email, room,
-}) => {
-  const apiKey = process.env.NEXT_PUBLIC_ZOOM_API_KEY;
-  const meetingNumber = meetingId;
-  const leaveUrl = '../dashboard';
-  const userName = name;
-  const userEmail = email;
-  const passWord = room.password;
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    import('@zoomus/websdk').then((module) => {
-      const { ZoomMtg } = module;
-      ZoomMtg.setZoomJSLib(`http://${process.env.NEXT_PUBLIC_CLIENT_APP_URL}/node_modules/@zoomus/websdk/dist/lib`, '/av');
-      ZoomMtg.preLoadWasm();
-      ZoomMtg.prepareJssdk();
-      ZoomMtg.init({
-        leaveUrl,
-        isSupportAV: true,
-        success: (success) => {
-          console.log(success);
-
-          ZoomMtg.join({
-            signature,
-            meetingNumber,
-            userName,
-            apiKey,
-            userEmail,
-            passWord,
-            success: (success2) => {
-              console.log(success2);
-            },
-            error: (error) => {
-              console.log(error);
-            },
-          });
-        },
-        error: (error) => {
-          console.log(error);
-        },
-      });
+const Room = ({ room: { url } }) => {
+  const iframeRef = useRef();
+  const dailyRef = useRef();
+  const joinedRef = useRef();
+  React.useEffect(() => {
+    dailyRef.current = DailyIframe.wrap(iframeRef.current, {
+      showLeaveButton: true,
     });
-    return () => { abortController.abort(); };
-  });
-
+    dailyRef.current.on('left-meeting', () => {
+      joinedRef.current = false;
+    });
+    dailyRef.current.on('joining-meeting', () => {
+      joinedRef.current = true;
+    });
+    console.log('mounted');
+    return () => {
+      dailyRef.current.destroy();
+      console.log('unmount');
+    };
+  }, []);
+  React.useEffect(() => {
+    (async () => {
+      if (joinedRef.current) {
+        // This is needed due to it never returning
+        // if there wasn't a meeting joined first...
+        await dailyRef.current.leave();
+      }
+      await dailyRef.current.join({ url });
+    })();
+  }, [url]);
   return (
-    <>
-    </>
+    <iframe
+      style={{ width: '100%', height: '100vh', border: 0 }}
+      title="video call iframe"
+      ref={iframeRef}
+      allow="camera; microphone; fullscreen"
+    />
   );
 };
 
-export async function getServerSideProps(ctx) {
-  await all.run(ctx.req, ctx.res);
-  const { id: roomId, meetingId } = ctx.query;
-  const { name } = ctx.req.user;
-  const { result: room } = await roomsDAO.findById(roomId);
+export async function getServerSideProps(context) {
+  console.log(context.query, context.req.query);
+  const { query: { id } } = context;
+  const { error, result } = await roomsDAO.findById(id);
+  if (error) {
+    console.warn(error);
+    return {
+      props: {
+        room: {
+          error: error.toString(),
+        },
+      },
+    };
+  }
   return {
     props: {
-      meetingId,
-      roomId,
-      room: JSON.parse(JSON.stringify(room)),
-      signature: generateSignature(meetingId, 1),
-      name,
-      // TODO unhardcode email
-      email: 'tage.mehta@gmail.com',
+      room: JSON.parse(JSON.stringify(result)),
     },
   };
 }
-
 export default Room;

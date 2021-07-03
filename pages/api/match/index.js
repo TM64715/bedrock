@@ -18,9 +18,12 @@ handler.post(async (req, res) => {
     },
   } = req;
   // Possibly Redundant
-  await queueDAO.insert({
-    userId, courseLevel, course, sessionLength, tags,
-  });
+  const { result: doc } = await queueDAO.findByUserId(userId);
+  if (!doc) {
+    await queueDAO.insert({
+      userId, courseLevel, course, sessionLength, tags,
+    });
+  }
   matchMaker();
 
   roomsDAO.watchUser(userId, ({ result }) => res.json({ result }));

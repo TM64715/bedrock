@@ -58,6 +58,17 @@ export default class queueDAO {
       return ({error: e.toString(), result: null, })
     }
   }
+  static async findByUserId(userId) {
+    const { db } = await connectToDatabase();
+    queue = db.collection('queue');
+    try {
+      const result = await queue.findOne({userId: ObjectId(userId)});
+      return ({ error: null, result});
+    } catch (e) {
+      return ({error: e.toString(), result: null, })
+    }
+  }
+
 }
 
 /**

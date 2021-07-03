@@ -25,6 +25,8 @@ export default class UsersDAO {
      * @param {Function} callback 
      * 
      */
+
+    //Should never be called
     
     static async findOrCreate(userInfo){
       const { db } = await connectToDatabase()
@@ -50,10 +52,10 @@ export default class UsersDAO {
     static async createUser(userInfo) {
       const { db } = await connectToDatabase()
       users = db.collection('users');
-        const {email, name, password, type} = userInfo;
+        const {email, name, password} = userInfo;
         try {
             let {hash} = await genHash(password);
-            let result = await users.insertOne({name, email, hash, type})
+            let result = await users.insertOne({name, email, hash})
             return({error: null, result: result})
         }
         catch (e) {
