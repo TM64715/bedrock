@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcryptjs';
 /**
  * @param {String} secret string to hash
  * @returns {HashResponse} response
