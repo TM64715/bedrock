@@ -2,8 +2,6 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import { connectToDatabase } from '../util/db';
 
-
-
 export default async function sessionMiddleware(req, res, next) {
   const conn = await connectToDatabase();
   return session({
@@ -12,7 +10,7 @@ export default async function sessionMiddleware(req, res, next) {
     resave: true,
     store: MongoStore.create({
       client: await conn.client,
-      collectionName: 'sessions'
-    })
+      collectionName: 'sessions',
+    }),
   })(req, res, next);
 }
