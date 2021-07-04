@@ -13,9 +13,8 @@ export default class UsersDAO {
     try {
       users = await conn.db(process.env.BEDROCK_NS).collection('users');
     } catch (e) {
-      console.error(
-        `Unable to establish a collection handle in usersDAO: ${e}`,
-      );
+      winston.log('error',
+        `Unable to establish a collection handle in usersDAO: ${e}`);
     }
   }
 
@@ -44,7 +43,7 @@ export default class UsersDAO {
       return ({ error: null, result });
     } catch (e) {
       const error = `An error occured while finding document: ${e.toString()}`;
-      console.error(error);
+      winston.log('error', error);
       return ({ error, result: null });
     }
   }

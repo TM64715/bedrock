@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Pusher from 'pusher-js';
 import BoxSelect from '../components/boxSelect';
 import Input from '../components/input';
 import { all } from '../middleware/index';
@@ -13,7 +14,33 @@ import AP from '../public/ap.svg';
 import HS from '../public/school.svg';
 import college from '../public/college.svg';
 
-function Dashboard({ user }) {
+let pusher;
+
+if (typeof window !== 'undefined') {
+  if (process.env.NODE_ENV !== 'production') {
+    // Enable pusher logging - isn't included in production
+    Pusher.logToConsole = true;
+  }
+
+  pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    authEndpoint: '/api/pusher/auth',
+  });
+}
+
+const joinChannel = (channel, userId, callback) => {
+  if (pusher) {
+    try {
+      const sub = pusher.subscribe(`private-${channel}`);
+      sub.bind(`match-${userId}`, callback);
+    } catch (e) {
+      console.log('error', e);
+      joinChannel(channel, userId, callback);
+    }
+  }
+};
+
+function Dashboard({ user: { name, id } }) {
   const router = useRouter();
   const [courseLevel, setCourseLevel] = React.useState('High School');
   const [course, setCourse] = React.useState('');
@@ -25,18 +52,21 @@ function Dashboard({ user }) {
   };
   const joinSession = async (e) => {
     e.preventDefault();
-    const { data: { result: { _id: id } } } = await axios.post('../api/match', {
+    const { data: { _id: roomId } } = await axios.post('../api/match', {
       courseLevel, course, sessionLength, tags: tags.split(','),
     });
-    if (id) router.push(`../room/${id}`);
+    if (roomId) router.push(`../room/${roomId}`);
   };
+  React.useEffect(() => {
+    joinChannel('match', id, (data) => router.push(`../room/${data._id}`));
+  }, []);
 
   return (
     <>
       <div className="flex items-center justify-between w-full pr-16 mt-8 pl-7">
         <p className="text-lg font-semibold text-indigo-700">Bedrock</p>
         <div className="flex flex-row items-center space-x-4">
-          <p>{user.name}</p>
+          <p>{name}</p>
           <div className="rounded-full">
             <Image src={profilePic} height={50} width={50} placeholder="blur" />
           </div>
@@ -47,7 +77,7 @@ function Dashboard({ user }) {
           <h1 className="text-3xl font-semibold">
             Welcome Back
             {' '}
-            <p className="inline font-semibold text-indigo-500">{user.name}</p>
+            <p className="inline font-semibold text-indigo-500">{name}</p>
             !
           </h1>
           <p className="mt-8">Answer some questions to join a study session</p>
@@ -102,10 +132,10 @@ export async function getServerSideProps(context) {
     };
   }
   // eslint-disable-next-line prefer-const
-  let { name } = context.req.user;
+  let { name, _id } = context.req.user;
   return {
     props: {
-      user: { name },
+      user: { name, id: _id.toString() },
     }, // will be passed to the page component as props
   };
 }

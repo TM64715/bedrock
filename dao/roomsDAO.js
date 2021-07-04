@@ -1,5 +1,6 @@
 import { ObjectID } from 'mongodb';
 import { connectToDatabase } from '../util/db';
+import logger from '../util/logger';
 
 let rooms;
 
@@ -11,9 +12,8 @@ class roomsDAO {
     try {
       rooms = await conn.db(process.env.BEDROCK_NS).collection('rooms');
     } catch (e) {
-      console.error(
-        `Unable to establish a collection handle in roomsDAO: ${e}`,
-      );
+      logger.log('error',
+        `Unable to establish a collection handle in roomsDAO: ${e}`);
     }
   }
 
@@ -50,7 +50,7 @@ class roomsDAO {
     rooms = db.collection('rooms');
     const stream = rooms.watch();
     stream.on('change', (result) => {
-      console.log('event reached');
+      logger.log('event reached');
       callback({ result: result.fullDocument });
       process.nextTick(() => stream.close());
     }, pipeline);

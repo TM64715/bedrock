@@ -43,7 +43,6 @@ const Room = ({ room: { url } }) => {
 };
 
 export async function getServerSideProps(context) {
-  console.log(context.query, context.req.query);
   const { query: { id } } = context;
   const { error, result } = await roomsDAO.findById(id);
   if (error) {

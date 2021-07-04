@@ -5,23 +5,25 @@ import axios from 'axios';
 import roomsDAO from '../dao/roomsDAO';
 import queueDAO from '../dao/queueDAO';
 import RoomEmitter from '../emitters/rooms';
+import pusher from '../lib/pusher';
+import logger from '../util/logger';
 
 let active = false;
 let iterations;
 async function worker() {
   if (iterations > 50) {
-    console.warn('infinite loop detected');
+    logger.log('warn', 'infinite loop detected');
     process.exit(1);
   }
   const { error, result } = await queueDAO.all();
   // An error occured getting the documents so stop running the function and try again next time;
   if (error) {
     active = false;
-    console.warn(error);
+    logger.log('error', error);
     return;
   } if (result.length === 0) {
     active = false;
-    console.debug('Found no documents');
+    logger.log('debug', 'Found no documents');
     return;
   }
   let pairs = [];
@@ -35,23 +37,44 @@ async function worker() {
   });
   pairs = pairs.filter((room) => room.length === 2);
   for (const room of pairs) {
-    const { data: { url, id, name } } = await axios.post(`${process.env.VIDEO_API_URL}/rooms`, {}, {
-      headers: {
-        Authorization: `Bearer ${process.env.DAILY_API_KEY}`,
-      },
-    });
-    const { result: roomObj } = await roomsDAO.create({
-      users: [room[0].userId, room[1].userId],
-      meetingId: id,
-      url,
-      name,
-    });
-    RoomEmitter.emit('create', roomObj);
-    await queueDAO.remove(room[0].userId);
+    try {
+      const { data: { url, id, name } } = await axios.post(`${process.env.VIDEO_API_URL}/rooms`, {
+        properties: {
+          exp: Math.floor(Date.now() / 1000) + 60 * 60,
+        },
+      }, {
+        headers: {
+          Authorization: `Bearer ${process.env.DAILY_API_KEY}`,
+        },
+      });
+      const { result: roomObj } = await roomsDAO.create({
+        users: [room[0].userId, room[1].userId],
+        meetingId: id,
+        url,
+        name,
+      });
+      RoomEmitter.emit('create', roomObj);
+      const eventBatch = [];
+      const channelName = 'private-match';
+      const eventPrefix = 'match-';
+      roomObj.users.forEach((user) => {
+        eventBatch.push({ channel: channelName, name: `${eventPrefix}${user.toString()}`, data: roomObj });
+      });
+      try {
+        pusher.triggerBatch(eventBatch);
+      } catch (e) {
+        logger.log('warn', e.stack);
+        logger.log('error', e);
+      }
+      await queueDAO.remove(room[0].userId);
 
-    await queueDAO.remove(room[1].userId);
+      await queueDAO.remove(room[1].userId);
+    } catch (e) {
+      logger.log('warn', e);
+    }
+
+    return worker();
   }
-  return worker();
 }
 
 async function makeMatch() {

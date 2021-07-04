@@ -1,5 +1,5 @@
 import { ObjectID } from 'mongodb';
-
+import logger from '../util/logger';
 import { connectToDatabase } from '../util/db';
 
 let queue;
@@ -12,9 +12,8 @@ export default class queueDAO {
     try {
       queue = await conn.db(process.env.BEDROCK_NS).collection('queue');
     } catch (e) {
-      console.error(
-        `Unable to establish a collection handle in queueDAO: ${e}`,
-      );
+      logger.log('error',
+        `Unable to establish a collection handle in queueDAO: ${e}`);
     }
   }
 
