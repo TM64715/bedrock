@@ -12,7 +12,7 @@ let active = false;
 let iterations;
 async function worker() {
   if (iterations > 50) {
-    logger.log('warn', 'infinite loop detected');
+    logger.warn('infinite loop detected');
     process.exit(1);
   }
   const { error, result } = await queueDAO.all();
@@ -23,7 +23,7 @@ async function worker() {
     return;
   } if (result.length === 0) {
     active = false;
-    logger.log('debug', 'Found no documents');
+    logger.debug('Found no documents');
     return;
   }
   let pairs = [];

@@ -52,10 +52,14 @@ function Dashboard({ user: { name, id } }) {
   };
   const joinSession = async (e) => {
     e.preventDefault();
-    const { data: { _id: roomId } } = await axios.post('../api/match', {
-      courseLevel, course, sessionLength, tags: tags.split(','),
-    });
-    if (roomId) router.push(`../room/${roomId}`);
+    try {
+      const { data: { _id: roomId } } = await axios.post('../api/match', {
+        courseLevel, course, sessionLength, tags: tags.split(','),
+      });
+      if (roomId) router.push(`../room/${roomId}`);
+    } catch (reqError) {
+      console.error(reqError);
+    }
   };
   React.useEffect(() => {
     joinChannel('match', id, (data) => router.push(`../room/${data._id}`));
