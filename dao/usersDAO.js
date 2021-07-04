@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { ObjectID } from 'mongodb';
 
 import { genHash } from '../service/encrypt.service';
 import { connectToDatabase } from '../util/db';
@@ -75,7 +75,7 @@ export default class UsersDAO {
     const { db } = await connectToDatabase();
     users = db.collection('users');
     try {
-      const doc = await users.findOne({ _id: ObjectId(id) });
+      const doc = await users.findOne({ _id: ObjectID(id) });
       return ({ error: null, result: doc });
     } catch (e) {
       return ({ error: e, result: null });

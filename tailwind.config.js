@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const plugin = require('tailwindcss/plugin');
+const heroPatterns = require('tailwindcss-hero-patterns');
 
 module.exports = {
   mode: 'jit',
@@ -12,6 +13,12 @@ module.exports = {
       },
       ringWidth: {
         3: '3px',
+      },
+      zIndex: {
+        '-10': '-10',
+      },
+      boxShadow: {
+        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
       },
     },
   },
@@ -59,9 +66,27 @@ module.exports = {
           marginTop: theme('spacing.4'),
           backgroundColor: theme('colors.gray.200'),
           cursor: 'pointer',
+
+        },
+        '.tab-control': {
+          width: theme('width["10/12"]'),
+          padding: `${theme('spacing.6')} ${theme('spacing.4')}`,
+          textAlign: 'center',
+          borderRadius: theme('borderRadius.2xl'),
+          backgroundImage: 'linear-gradient(to top, #DFE9F3 0%, #ffffff 100%)',
+          opacity: '0.85',
+          '@apply shadow-none': {},
+          color: theme('colors.gray-800'),
+          fontWeight: theme('fontWeight.medium'),
+          '@apply brightness-95': {},
+        },
+        '.tab-control-active': {
+          opacity: '.95',
+          '@apply shadow-3xl': {},
+          '@apply brightness-150': {},
         },
       };
 
       addComponents(buttons);
-    })],
+    }), heroPatterns],
 };

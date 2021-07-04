@@ -4,9 +4,10 @@
 
 import nc from 'next-connect';
 import queueDAO from '../../../dao/queueDAO';
-import roomsDAO from '../../../dao/roomsDAO';
+// import roomsDAO from '../../../dao/roomsDAO';
 import { all } from '../../../middleware';
 import matchMaker from '../../../workers/matchmaker';
+import RoomEmitter from '../../../emitters/rooms';
 
 const handler = nc();
 handler.use(all);
@@ -25,7 +26,16 @@ handler.post(async (req, res) => {
     });
   }
   matchMaker();
-
-  roomsDAO.watchUser(userId, ({ result }) => res.json({ result }));
+  RoomEmitter.on('create', (room) => {
+    let result = false;
+    room.users.forEach((roomUser) => {
+      if (roomUser.equals(userId)) result = true;
+    });
+    if (result) {
+      res.json(room);
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+  });
 });
 export default handler;

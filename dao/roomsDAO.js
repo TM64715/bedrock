@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { ObjectID } from 'mongodb';
 import { connectToDatabase } from '../util/db';
 
 let rooms;
@@ -28,7 +28,7 @@ class roomsDAO {
       const result = await rooms.insertOne({
         users, meetingId, url, name,
       });
-      return ({ error: null, result });
+      return ({ error: null, result: result.ops[0] });
     } catch (e) {
       return ({ error: e.toString(), result: null });
     }
@@ -41,7 +41,7 @@ class roomsDAO {
         $match: {
           users: {
             $in: [
-              new ObjectId(userId),
+              new ObjectID(userId),
             ],
           },
         },
@@ -60,7 +60,7 @@ class roomsDAO {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
     try {
-      const result = await rooms.findOne({ _id: new ObjectId(id) });
+      const result = await rooms.findOne({ _id: new ObjectID(id) });
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });
@@ -71,7 +71,7 @@ class roomsDAO {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
     try {
-      const result = await rooms.updateOne({ _id: new ObjectId(id) }, { $set: { archived: true } });
+      const result = await rooms.updateOne({ _id: new ObjectID(id) }, { $set: { archived: true } });
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });

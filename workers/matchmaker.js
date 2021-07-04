@@ -4,6 +4,7 @@
 import axios from 'axios';
 import roomsDAO from '../dao/roomsDAO';
 import queueDAO from '../dao/queueDAO';
+import RoomEmitter from '../emitters/rooms';
 
 let active = false;
 let iterations;
@@ -39,9 +40,13 @@ async function worker() {
         Authorization: `Bearer ${process.env.DAILY_API_KEY}`,
       },
     });
-    await roomsDAO.create({
-      users: [room[0].userId, room[1].userId], meetingId: id, url, name,
+    const { result: roomObj } = await roomsDAO.create({
+      users: [room[0].userId, room[1].userId],
+      meetingId: id,
+      url,
+      name,
     });
+    RoomEmitter.emit('create', roomObj);
     await queueDAO.remove(room[0].userId);
 
     await queueDAO.remove(room[1].userId);

@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { ObjectID } from 'mongodb';
 
 import { connectToDatabase } from '../util/db';
 
@@ -27,7 +27,7 @@ export default class queueDAO {
     try {
     // Destructure data to ensure no unwanted fields;
       const result = await queue.insertOne({
-        userId: ObjectId(userId), courseLevel, course, sessionLength, tags,
+        userId: ObjectID(userId), courseLevel, course, sessionLength, tags,
       });
       return ({ error: null, result });
     } catch (e) {
@@ -44,7 +44,7 @@ export default class queueDAO {
     const { db } = await connectToDatabase();
     queue = db.collection('queue');
     try {
-      const result = await queue.deleteOne({ userId: ObjectId(userId) });
+      const result = await queue.deleteOne({ userId: ObjectID(userId) });
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });
@@ -68,7 +68,7 @@ export default class queueDAO {
     const { db } = await connectToDatabase();
     queue = db.collection('queue');
     try {
-      const result = await queue.findOne({ userId: ObjectId(userId) });
+      const result = await queue.findOne({ userId: ObjectID(userId) });
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });
