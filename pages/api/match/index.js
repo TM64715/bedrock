@@ -4,10 +4,10 @@
 
 import nc from 'next-connect';
 import queueDAO from '../../../dao/queueDAO';
-// import roomsDAO from '../../../dao/roomsDAO';
+import roomsDAO from '../../../dao/roomsDAO';
 import { all } from '../../../middleware';
 import matchMaker from '../../../workers/matchmaker';
-import RoomEmitter from '../../../emitters/rooms';
+// import RoomEmitter from '../../../emitters/rooms';
 
 const handler = nc();
 handler.use(all);
@@ -18,24 +18,16 @@ handler.post(async (req, res) => {
       courseLevel, course, sessionLength, tags,
     },
   } = req;
-  // Possibly Redundant
-  const { result: doc } = await queueDAO.findByUserId(userId);
-  if (!doc) {
+  // Make sure that the user is not already in a queue
+  const { result: queueResult } = await queueDAO.findByUserId(userId);
+  // If the user is already in a nonArchived room then return that room
+  const { count } = await roomsDAO.findByUser(userId, { archived: { $lt: 2 } });
+  if (!queueResult && !(count > 0)) {
     await queueDAO.insert({
       userId, courseLevel, course, sessionLength, tags,
     });
   }
   matchMaker();
-  RoomEmitter.on('create', (room) => {
-    let result = false;
-    room.users.forEach((roomUser) => {
-      if (roomUser.equals(userId)) result = true;
-    });
-    if (result) {
-      res.json(room);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  });
+  res.status(200).send('OK');
 });
 export default handler;

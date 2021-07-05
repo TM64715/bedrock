@@ -52,6 +52,8 @@ async function worker() {
         meetingId: id,
         url,
         name,
+        archived: 0,
+        inProgress: false,
       });
       RoomEmitter.emit('create', roomObj);
       const eventBatch = [];

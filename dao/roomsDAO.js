@@ -21,12 +21,12 @@ class roomsDAO {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
     const {
-      users, meetingId, url, name,
+      users, meetingId, url, name, archived,
     } = data;
     if (!Array.isArray(users)) return { error: 'users must be an array', data: null };
     try {
       const result = await rooms.insertOne({
-        users, meetingId, url, name,
+        users, meetingId, url, name, archived,
       });
       return ({ error: null, result: result.ops[0] });
     } catch (e) {
@@ -67,12 +67,38 @@ class roomsDAO {
     }
   }
 
-  static async archive(id) {
+  static async setArchive({ roomId, archived, userId }) {
+    const { db } = await connectToDatabase();
+    rooms = db.collection('rooms');
+    console.log(archived);
+    if (!(archived === 0 || archived === 1 || archived === 2)) return { error: 'invalid archived value', data: null };
+    try {
+      const result = await rooms.updateOne(
+        {
+          _id: new ObjectID(roomId),
+          users: {
+            $in: [new ObjectID(userId)],
+          },
+        },
+        {
+          $set: { archived },
+        },
+      );
+      return ({ error: null, result });
+    } catch (e) {
+      return ({ error: e.toString(), result: null });
+    }
+  }
+
+  static async findByUser(userId, search) {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
     try {
-      const result = await rooms.updateOne({ _id: new ObjectID(id) }, { $set: { archived: true } });
-      return ({ error: null, result });
+      const result = await rooms.find({ users: { $in: [new ObjectID(userId)] }, ...search });
+      const resultArr = await result.toArray();
+      const count = await result.count();
+      await result.close();
+      return ({ error: null, result: resultArr, count });
     } catch (e) {
       return ({ error: e.toString(), result: null });
     }

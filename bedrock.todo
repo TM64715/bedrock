@@ -13,17 +13,15 @@ Bedrock:
     ✔ Write HTML @done(21-06-28 18:56)
     ✔ Use actual data @done(21-06-28 18:57)
     - Add friends feature 
+    - Redesign UI add dropdowns
+  - Profile Information
 Bedrock Backend:
   ✔ Move back to serverless @started(21-06-28 21:34) @done(21-06-29 00:58) @lasted(3h24m27s)
   ✔ Establish a matchmaking feature @done(21-06-30 00:41)
   - Maintain sessions/study halls
   ✘ OAuth with zoom @cancelled(21-06-30 23:18)
-  - Client side zoom
-  - Delete zoom logic
-
-  {
-    "zoomId": "K253E1C1STOwtgHFoqOhHQ",
-    "accessToken": "eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiJiNzU2NjE3Yy1mYWQ3LTRkNTMtODUzOS1jZDIzM2FlMmZjYTcifQ.eyJ2ZXIiOjcsImF1aWQiOiJmYjgyNWEwNDU0N2Q0NzVkODdmYzA5MTk3NjgwZWEwZCIsImNvZGUiOiJLaklTMTRyZmJJX0syNTNFMUMxU1RPd3RnSEZvcU9oSFEiLCJpc3MiOiJ6bTpjaWQ6b0RiVGx0eWxTQ21SRjNxMVRMaDFNQSIsImdubyI6MCwidHlwZSI6MCwidGlkIjowLCJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiJLMjUzRTFDMVNUT3d0Z0hGb3FPaEhRIiwibmJmIjoxNjI1MTExMDQxLCJleHAiOjE2MjUxMTQ2NDEsImlhdCI6MTYyNTExMTA0MSwiYWlkIjoidXpVc0F5bU1STHFLZ0tJTEdWQW5BdyIsImp0aSI6ImIwMzQyNjFiLTgxZjgtNDViMi05NWZmLWVhNjBlMzI4M2Q3YyJ9.7Bw3AvGprtUwpSqFD65txrb4Oi7j8ZL1nvTAeLTYaAbSqt62X1Z8q2SLThYIEpFaEryIzD-S9Zdb46QmH5viZw",
-    "name": "Tage Mehta",
-    "refreshToken": "eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiJmMDA0NThkOS0wMTFlLTRhN2EtYWRiNy1jOTFkZTQ1Y2M3NGIifQ.eyJ2ZXIiOjcsImF1aWQiOiJmYjgyNWEwNDU0N2Q0NzVkODdmYzA5MTk3NjgwZWEwZCIsImNvZGUiOiJLaklTMTRyZmJJX0syNTNFMUMxU1RPd3RnSEZvcU9oSFEiLCJpc3MiOiJ6bTpjaWQ6b0RiVGx0eWxTQ21SRjNxMVRMaDFNQSIsImdubyI6MCwidHlwZSI6MSwidGlkIjowLCJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiJLMjUzRTFDMVNUT3d0Z0hGb3FPaEhRIiwibmJmIjoxNjI1MTExMDQxLCJleHAiOjIwOTgxNTEwNDEsImlhdCI6MTYyNTExMTA0MSwiYWlkIjoidXpVc0F5bU1STHFLZ0tJTEdWQW5BdyIsImp0aSI6ImVjMzI0NDk5LWFlYjUtNGZkMi04MzRhLWY4MzI4ZWRmNDM2ZSJ9.OJOkC8Uz1401F842apFuYCLyV8T_0RU08Vpcm9U4Yg9-rimGFp7K3Jr5y_mCzGZmAjqO9Gk0r-0Cz4_IvNToVg"
-}
+  ✘ Client side zoom @cancelled(21-07-04 17:04)
+  ✔ Delete zoom logic @done(21-07-04 17:04)
+  ✔ implement archive and inProgress to stop multiple rooms at once @started(21-07-04 18:19) @done(21-07-05 00:55) @lasted(6h36m28s)
+  - Create a matchmaking feature
+  - Share a link feature
