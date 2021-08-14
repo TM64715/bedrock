@@ -7,7 +7,7 @@ const handler = nc();
 handler.use(all);
 
 handler.post(async (req, res) => {
-  const { body: { email, password, name } } = req;
+  const { body: { email, password, name }, db } = req;
   if (!email) {
     res.json({ error: 'Missing required field: Email', data: null });
     return;
@@ -15,16 +15,14 @@ handler.post(async (req, res) => {
     res.json({ error: 'Missing required field: Password', data: null });
     return;
   }
-  const { result: emailResult } = await UsersDAO.findByEmail(email);
+  const { result: emailResult } = await UsersDAO.findByEmail(db, email);
   if (emailResult) {
     res.json({ error: 'Email already in use', data: null });
     return;
   }
 
   try {
-    const { result, error } = await UsersDAO.createUser({
-      email, name, password,
-    });
+    const { result, error } = await UsersDAO.createUser(db, { email, name, password });
     if (error) {
       res.status(500).json({ error, result: null, message: 'An error occurred' });
     }

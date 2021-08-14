@@ -1,6 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-const plugin = require('tailwindcss/plugin');
-const heroPatterns = require('tailwindcss-hero-patterns');
+const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   mode: 'jit',
@@ -9,84 +7,37 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: 'Inter',
+        sans:[ 'Montserrat', 'sans-serif']
       },
-      ringWidth: {
-        3: '3px',
-      },
-      zIndex: {
-        '-10': '-10',
-      },
-      boxShadow: {
-        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
-      },
+      colors: {
+        gray: {
+          100: 'hsla(210, 10%, 96%, 1)',
+          200: 'hsla(220, 13%, 91%, 1)',
+          300: 'hsla(212, 11%, 80%, 1)',
+          400: 'hsla(212, 10%, 65%, 1)',
+          500: 'hsla(212, 10%, 48%, 1)',
+          600: '#hsla(210, 7%, 35%, 1)',
+          700: 'hsla(210, 10%, 22%, 1)',
+          800: 'hsla(210, 20%, 19%, 1)',
+          900: 'hsla(210, 19%, 13%, 1)',
+        },
+        blue: {
+          100: 'hsla(214, 95%, 93%, 1)',
+          200: 'hsla(213, 97%, 87%, 1)',
+          300: 'hsla(212, 96%, 78%, 1)',
+          400: 'hsla(216, 81%, 67%, 1)',
+          500: 'hsla(218, 70%, 50%, 1)',
+          600: 'hsla(220, 80%, 39%, 1)',
+          700: 'hsla(223, 80%, 27%, 1)',
+          800: 'hsla(221, 90%, 15%, 1)',
+          900: 'hsla(223, 70%, 11%, 1)',
+        },
+        orange: 'hsla(32, 95%, 47, 1)',
+      }
     },
   },
   variants: {
     extend: {
     },
   },
-  plugins: [
-    plugin(({ addComponents, theme }) => {
-      const buttons = {
-        '.btn': {
-          padding: `${theme('spacing.1')} ${theme('spacing.3')}`,
-          borderRadius: theme('borderRadius.md'),
-          fontWeight: theme('fontWeight.500'),
-          cursor: 'pointer',
-          fontSize: theme('fontSize.lg'),
-        },
-        '.btn-indigo': {
-          backgroundColor: theme('colors.indigo.500'),
-          color: theme('colors.white'),
-          '&:hover': {
-            backgroundColor: theme('colors.indigo.600'),
-          },
-        },
-        '.btn-outline': {
-          border: `${theme('borderWidth.DEFAULT')} solid ${theme('colors.white')}`,
-          color: theme('colors.white'),
-          '&:hover': {
-            textDecoration: 'underline',
-          },
-        },
-        '.link': {
-          '&:hover': {
-            textDecoration: 'underline',
-          },
-        },
-        '.box-select': {
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: theme('spacing.32'),
-          height: theme('spacing.32'),
-          padding: `${theme('spacing.4')} ${theme('spacing.1')}`,
-          marginTop: theme('spacing.4'),
-          backgroundColor: theme('colors.gray.200'),
-          cursor: 'pointer',
-
-        },
-        '.tab-control': {
-          width: theme('width["10/12"]'),
-          padding: `${theme('spacing.6')} ${theme('spacing.4')}`,
-          textAlign: 'center',
-          borderRadius: theme('borderRadius.2xl'),
-          backgroundImage: 'linear-gradient(to top, #DFE9F3 0%, #ffffff 100%)',
-          opacity: '0.85',
-          '@apply shadow-none': {},
-          color: theme('colors.gray-800'),
-          fontWeight: theme('fontWeight.medium'),
-          '@apply brightness-95': {},
-        },
-        '.tab-control-active': {
-          opacity: '.95',
-          '@apply shadow-3xl': {},
-          '@apply brightness-150': {},
-        },
-      };
-
-      addComponents(buttons);
-    }), heroPatterns],
-};
+}

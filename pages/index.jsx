@@ -1,48 +1,90 @@
 import React from 'react';
-import Image from 'next/image';
+import Head from 'next/head';
 import Link from 'next/link';
-import community from '../public/community.png';
 
-function LandingPage() {
+export default function Home() {
   return (
-    <>
-      <div
-        className="fixed overflow-hidden top-[0vh] z-[-1] max-h-[100vh] w-[100vw]"
-        style={{
-        }}
-      >
-        <div
-          className="relative h-[200vh] w-[200vh] bg-indigo-500 rounded-[200vh] top-[-50vh] right-[-60vh] z-[-100]"
-        />
-      </div>
-      <div className="mt-[2vh] w-full flex justify-between text-lg items-center">
-        <div className="flex w-1/2 pl-5 align-middle md:w-1/5 justify-evenly justify-self-start">
-          <p className="font-semibold">Bedrock</p>
-          <p className="link"><Link href="/about">About</Link></p>
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+      <Head>
+        <title>Create Next App</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <main className="flex flex-col items-center justify-center flex-1 w-full px-20 text-center">
+        <h1 className="text-6xl font-bold">
+          Welcome to
+          {' '}
+          <a className="text-blue-600" href="https://nextjs.org">
+            Next.js!
+          </a>
+        </h1>
+        <p className="mt-3">
+          This is an example with a mongodb implementation
+          (that solves connections issue) and passport authentication
+        </p>
+        <p className="mt-3 text-2xl">
+          Check out
+          {' '}
+          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
+            <Link href="/auth/login">/auth/login</Link>
+          </code>
+        </p>
+
+        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
+          <a
+            href="https://nextjs.org/docs"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
+            <p className="mt-4 text-xl">
+              Find in-depth information about Next.js features and API.
+            </p>
+          </a>
+
+          <a
+            href="https://nextjs.org/learn"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
+            <p className="mt-4 text-xl">
+              Learn about Next.js in an interactive course with quizzes!
+            </p>
+          </a>
+
+          <a
+            href="https://github.com/vercel/next.js/tree/master/examples"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
+            <p className="mt-4 text-xl">
+              Discover and deploy boilerplate example Next.js projects.
+            </p>
+          </a>
+
+          <a
+            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
+          >
+            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
+            <p className="mt-4 text-xl">
+              Instantly deploy your Next.js site to a public URL with Vercel.
+            </p>
+          </a>
         </div>
-        <div className="flex items-center self-end w-1/2 pr-5 md:w-1/6 justify-evenly">
-          <p className="text-white link"><Link href="/auth/login">Log In</Link></p>
-          <button className="btn btn-outline " type="button"><Link href="/auth/signup">Sign Up</Link></button>
-        </div>
-      </div>
-      <div className="grid grid-flow-row grid-cols-2">
-        <div className="flex flex-row items-center pl-10">
-          <div>
-            <p className="self-center text-5xl font-semibold">Bedrock</p>
-            <p className="self-center">This is a nice long subtitle.  i have lots to say</p>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <div className="w-full h-[500px] relative">
-            <Image src={community} layout="fill" objectFit="scale-down" alt="" quality={100} placeholder="blur" />
-          </div>
-          <p className="text-base font-semibold text-white ">
-            Every student should have the opportunity to study with their peers
-          </p>
-        </div>
-      </div>
-    </>
+      </main>
+
+      <footer className="flex items-center justify-center w-full h-24 border-t">
+        <a
+          className="flex items-center justify-center"
+          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by
+          {' '}
+          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
+        </a>
+      </footer>
+    </div>
   );
 }
-
-export default LandingPage;

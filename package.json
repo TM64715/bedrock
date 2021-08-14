@@ -1,24 +1,17 @@
 {
-  "name": "custom-server-express",
+  "name": "picnic",
   "version": "1.0.0",
   "scripts": {
-    "dev": " next dev",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.14.5",
     "@babel/polyfill": "^7.12.1",
     "@babel/runtime": "^7.12.5",
-    "@daily-co/daily-js": "^0.14.0",
-    "@emotion/react": "^11.4.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.35",
-    "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@fortawesome/react-fontawesome": "^0.1.14",
-    "@giorgosavgeris/passport-zoom-oauth2": "^1.1.0",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
-    "bcryptjs": "^2.4.3",
     "connect-mongo": "^4.4.1",
     "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.2",
@@ -26,16 +19,11 @@
     "mongodb": "^3.6.9",
     "next": "latest",
     "next-connect": "^0.10.1",
-    "ngrok": "^4.0.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "passport-oauth2": "^1.5.0",
-    "pusher": "^5.0.0",
-    "pusher-js": "^7.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "tailwindcss-hero-patterns": "^0.0.1",
-    "winston": "^3.3.3"
+    "swr": "^0.5.6"
   },
   "license": "MIT",
   "devDependencies": {
@@ -43,19 +31,15 @@
     "@babel/node": "^7.14.7",
     "@babel/preset-env": "^7.14.7",
     "@babel/preset-react": "^7.14.5",
-    "@types/react": "^17.0.13",
-    "@types/tailwindcss": "^2.2.1",
-    "autoprefixer": "^10.2.6",
+    "autoprefixer": "^10.3.1",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-next": "^11.0.1",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "nodemon": "^2.0.7",
-    "postcss": "^8.3.5",
-    "tailwindcss": "^2.2.4",
-    "typescript": "^4.3.5"
+    "postcss": "^8.3.6",
+    "tailwindcss": "^2.2.7"
   }
 }

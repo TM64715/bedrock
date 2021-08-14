@@ -1,21 +1,14 @@
-# Custom Express Server example
+# nextjs-mongodb-passport
+Starter repository for a next js with a working mongodb connection middleware and a passport implementation.  Pages are built with Tailwindcss (Feel free to make your own login and signup)
 
-Most of the time the default Next.js server will be enough but there are times you'll want to run your own server to integrate into an existing application. Next.js provides [a custom server api](https://nextjs.org/docs/advanced-features/custom-server).
+# installation
 
-Because the Next.js server is a Node.js module you can combine it with any other part of the Node.js ecosystem. In this case we are using express.
+Run `npm install` and `npm install -D tailwindcss@latest postcss@latest autoprefixer@latest` (if you want to use the prebuilt pages).
+Start the server with `npm run dev` and checkout the pages
 
-## Preview
+# setup
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+All database code is written in the `/dao` folder.  You can use whatever methods you want here.  Auth and DB are implemented as middleware
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/custom-server-express?runScript=dev)
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example custom-server-express custom-server-express-app
-# or
-yarn create next-app --example custom-server-express custom-server-express-app
-```
+# Deploy
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftagemehta%2Fnextjs-mongodb-passport&env=APP_DB_URI,APP_NS,SESSION_SECRET)
