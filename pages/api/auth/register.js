@@ -22,7 +22,7 @@ handler.post(async (req, res) => {
   }
 
   try {
-    const { result, error } = await UsersDAO.createUser(db, { email, name, password });
+    const { result, error } = await UsersDAO.createUser({ email, name, password });
     if (error) {
       res.status(500).json({ error, result: null, message: 'An error occurred' });
     }

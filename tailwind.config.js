@@ -1,13 +1,14 @@
-const plugin = require('tailwindcss/plugin')
+// eslint-disable-next-line import/no-extraneous-dependencies
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   mode: 'jit',
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'media',
   theme: {
     extend: {
       fontFamily: {
-        sans:[ 'Montserrat', 'sans-serif']
+        sans: ['Montserrat', 'sans-serif'],
       },
       colors: {
         gray: {
@@ -33,11 +34,13 @@ module.exports = {
           900: 'hsla(223, 70%, 11%, 1)',
         },
         orange: 'hsla(32, 95%, 47, 1)',
-      }
+        pink: colors.pink,
+        purple: colors.purple,
+      },
     },
   },
   variants: {
     extend: {
     },
   },
-}
+};
