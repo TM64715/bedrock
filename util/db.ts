@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.BEDROCK_DB_URI;
 const MONGODB_DB = process.env.BEDROCK_NS;
@@ -27,18 +27,13 @@ if (!cached) {
   cached = global.mongo;
 }
 // eslint-disable-next-line import/prefer-default-export
-export async function connectToDatabase() {
+export async function connectToDatabase():Promise<{client: MongoClient, db: Db}> {
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
-    const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    };
-
-    cached.promise = MongoClient.connect(MONGODB_URI, opts).then((client) => {
+    cached.promise = MongoClient.connect(MONGODB_URI).then((client) => {
       connections += 1;
       console.warn('Connections', connections);
       return {
