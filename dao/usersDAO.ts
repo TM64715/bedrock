@@ -1,52 +1,16 @@
-import { ObjectID } from 'mongodb';
-
+import {
+  ObjectId, Collection, Document, UpdateResult,
+} from 'mongodb';
 import { genHash } from '../service/encrypt.service';
 import { connectToDatabase } from '../util/db';
 
-let users;
+let users: Collection;
 
+interface DAOResponse {
+  error: Error | null,
+  result: Document | UpdateResult,
+}
 export default class UsersDAO {
-  static async injectDB(conn) {
-    if (users) {
-      return;
-    }
-    try {
-      users = await conn.db(process.env.BEDROCK_NS).collection('users');
-    } catch (e) {
-      winston.log('error',
-        `Unable to establish a collection handle in usersDAO: ${e}`);
-    }
-  }
-
-  /**
-     *
-     * @param {Object} userInfo
-     * @param {Function} callback
-     *
-     */
-
-  // Should never be called
-
-  static async findOrCreate(userInfo) {
-    const { db } = await connectToDatabase();
-    users = db.collection('users');
-    const {
-      zoomId, name, accessToken, refreshToken, admin,
-    } = userInfo;
-    await users.updateOne({ zoomId }, {
-      $set: {
-        zoomId, name, accessToken, refreshToken, admin,
-      },
-    }, { upsert: true });
-    try {
-      const result = await users.findOne({ zoomId });
-      return ({ error: null, result });
-    } catch (e) {
-      const error = `An error occured while finding document: ${e.toString()}`;
-      winston.log('error', error);
-      return ({ error, result: null });
-    }
-  }
   /**
      *
      * @param {Object} userInfo
@@ -70,11 +34,11 @@ export default class UsersDAO {
      * @param {String} id - id of a user
      * @returns {DAOResponse} Returns an error or a document
     */
-  static async findById(id) {
+  static async findById(id: string):Promise<DAOResponse> {
     const { db } = await connectToDatabase();
     users = db.collection('users');
     try {
-      const doc = await users.findOne({ _id: ObjectID(id) });
+      const doc = await users.findOne({ _id: new ObjectId(id) });
       return ({ error: null, result: doc });
     } catch (e) {
       return ({ error: e, result: null });
@@ -107,6 +71,33 @@ export default class UsersDAO {
       const { _id: id } = UserInfo;
       const doc = await users.deleteOne({ _id: id });
       return ({ error: null, result: doc });
+    } catch (e) {
+      return ({ error: e, result: null });
+    }
+  }
+
+  static async updateUser(id: string, UserInfo: {
+    name?: string;
+    bio?: string;
+    grade: number;
+    image?: {
+      url: string;
+      publicId: string;
+    };
+  }):Promise<DAOResponse> {
+    const { db } = await connectToDatabase();
+    users = db.collection('users');
+    try {
+      const userInfoCopy = {
+        name: UserInfo.name,
+        bio: UserInfo.bio,
+        grade: UserInfo.grade,
+        image: UserInfo.image,
+      };
+      Object.keys(userInfoCopy).forEach((key) => userInfoCopy[key] === undefined
+      && delete userInfoCopy[key]);
+      const doc = await users.updateOne({ _id: new ObjectId(id) }, { $set: userInfoCopy });
+      return ({ error: null, result: doc.upsertedCount });
     } catch (e) {
       return ({ error: e, result: null });
     }

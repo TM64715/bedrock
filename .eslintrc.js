@@ -2,12 +2,13 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true,
   },
   extends: [
     'plugin:react/recommended',
     'airbnb',
+    'plugin:@next/next/recommended',
   ],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -17,16 +18,39 @@ module.exports = {
   },
   plugins: [
     'react',
+    '@typescript-eslint',
+    'import',
   ],
   rules: {
-    'react/prop-types': 'off',
-    'no-underscore-dangle': [
+    'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.ts'] }],
+    'react/prop-types': 'off', // Since we do not use prop-types
+    'react/require-default-props': 'off', // Since we do not use prop-types
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error'],
+    'import/extensions': [
       'error',
+      'ignorePackages',
       {
-        allow: [
-          '_id',
-        ],
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
       },
     ],
+    'no-underscore-dangle': ['error', { allow: ['_id'] }],
+    'import/no-unresolved': 'error',
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      },
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
 };
