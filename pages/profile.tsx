@@ -53,7 +53,7 @@ export default function Profile() {
         <InputGroup id="grade" label="Grade" maxLength={2} onChange={(e) => { gradeRef.current = { ...gradeRef.current, value: e.target.value }; }} type="number" autoComplete="off" placeholder="" passRef={gradeRef} />
         <TxtAreaGroup id="bio" label="Bio" onChange={(e) => { bioRef.current = { ...bioRef.current, value: e.target.value }; }} placeholder="Hi, I’m ... and I love to..." passRef={bioRef} />
         <Button type="submit" disabled={isLoading}>Save</Button>
-        <Link href="/browse">Next Page</Link>
+        <Link href="/join">Next Page</Link>
       </div>
     </form>
   );
