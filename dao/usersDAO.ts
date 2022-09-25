@@ -97,7 +97,7 @@ export default class UsersDAO {
       Object.keys(userInfoCopy).forEach((key) => userInfoCopy[key] === undefined
       && delete userInfoCopy[key]);
       const doc = await users.updateOne({ _id: new ObjectId(id) }, { $set: userInfoCopy });
-      return ({ error: null, result: doc.upsertedCount });
+      return ({ error: null, result: doc });
     } catch (e) {
       return ({ error: e, result: null });
     }
