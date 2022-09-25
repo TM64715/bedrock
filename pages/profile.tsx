@@ -31,7 +31,7 @@ export default function Profile() {
     setIsLoading(false);
   };
   useEffect(() => {
-    console.log(user);
+    // console.log(user);
     if (user) {
       gradeRef.current.value = user.grade;
       bioRef.current.value = user.bio;

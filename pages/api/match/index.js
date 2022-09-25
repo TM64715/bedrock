@@ -22,7 +22,7 @@ handler.post(async (req, res) => {
   const { result: queueResult } = await queueDAO.findByUserId(userId);
   // If the user is already in a nonArchived room then return that room
   const { count } = await roomsDAO.findByUser(userId, { archived: { $lt: 2 } });
-  console.log(count);
+  // console.log(count);
   if (!queueResult && !(count > 0)) {
     await queueDAO.insert(userId, subject, course, level, goals);
   }

@@ -43,7 +43,7 @@ handler.patch(async (req: NextApiRequest, res: NextApiResponse) => {
       publicId = image.public_id;
       profilePicURL = image.secure_url;
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       res.json({ error: e.toString() });
       return;
     }

@@ -71,7 +71,7 @@ class roomsDAO {
   static async setArchive(roomId: string, archived: 0 | 1 | 2, userId: string) {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
-    console.log(archived);
+    // console.log(archived);
     if (!(archived === 0 || archived === 1 || archived === 2)) return { error: 'invalid archived value', data: null };
     try {
       const result = await rooms.updateOne(

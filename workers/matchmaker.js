@@ -36,6 +36,7 @@ async function worker() {
     }
   });
   pairs = pairs.filter((room) => room.length === 2);
+  // eslint-disable-next-line no-console
   console.log(pairs);
   for (const room of pairs) {
     try {

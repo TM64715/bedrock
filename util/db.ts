@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { MongoClient, Db } from 'mongodb';
 
 const MONGODB_URI = process.env.BEDROCK_DB_URI;

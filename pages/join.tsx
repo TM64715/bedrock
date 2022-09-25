@@ -28,7 +28,7 @@ const joinChannel = (channel, userId, callback) => {
       const sub = pusher.subscribe(`private-${channel}`);
       sub.bind(`match-${userId}`, callback);
     } catch (e) {
-      console.log('error', e);
+      // console.log('error', e);
       joinChannel(channel, userId, callback);
     }
   }
@@ -68,7 +68,7 @@ export default function Join({ user }) {
         goals,
       });
     } catch (reqError) {
-      console.error(reqError);
+      // console.error(reqError);
     }
   };
 

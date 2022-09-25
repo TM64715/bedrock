@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useRef } from 'react';
 import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import axios from 'axios';
@@ -11,9 +12,10 @@ const Room = ({ room: { url, _id } }) => {
     axios.put('/api/rooms/archive', {
       roomId: _id,
       archived: val,
-    }).then((res) => {
-      console.log(res);
     });
+    // .then((res) => {
+    //   // console.log(res);
+    // });
   };
 
   React.useEffect(() => {
