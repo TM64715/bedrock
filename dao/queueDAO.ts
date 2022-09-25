@@ -1,8 +1,9 @@
-import { ObjectID } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import logger from '../util/logger';
 import { connectToDatabase } from '../util/db';
+import Queue from '../models/queue';
 
-let queue;
+let queue: Collection<Queue>;
 
 export default class queueDAO {
   static async injectDB(conn) {
@@ -17,18 +18,14 @@ export default class queueDAO {
     }
   }
 
-  static async insert(data) {
+  static async insert(userId: Queue['userId'], course: Queue['course'], subject: Queue['subject'], goals: Queue['goals']) {
     const { db } = await connectToDatabase();
     queue = db.collection('queue');
-    const {
-      userId, courseLevel, course, sessionLength, tags,
-    } = data;
+    const NewQueue = new Queue(new ObjectId(userId), course, subject, goals);
     try {
     // Destructure data to ensure no unwanted fields;
-      const result = await queue.insertOne({
-        userId: ObjectID(userId), courseLevel, course, sessionLength, tags,
-      });
-      return ({ error: null, result });
+      const result = await queue.insertOne(NewQueue);
+      return ({ error: null, result: result.insertedId });
     } catch (e) {
       return ({ error: e.toString(), result: null });
     }
@@ -39,18 +36,19 @@ export default class queueDAO {
    * @param {*} db The database connection
    * @param {*} userId  The document of the queue (not the userId)
    */
-  static async remove(userId) {
+  static async remove(userId: string) {
     const { db } = await connectToDatabase();
     queue = db.collection('queue');
     try {
-      const result = await queue.deleteOne({ userId: ObjectID(userId) });
+      const result = await queue.deleteOne({ userId: new ObjectId(userId) });
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });
     }
   }
 
-  static async all() {
+  static async all()
+  :Promise<{error:string, result: null} | {error: null, result: Queue[]}> {
     const { db } = await connectToDatabase();
     queue = db.collection('queue');
     try {
@@ -63,11 +61,12 @@ export default class queueDAO {
     }
   }
 
-  static async findByUserId(userId) {
+  static async findByUserId(userId)
+  :Promise<{error:string, result: null} | {error: null, result: Queue}> {
     const { db } = await connectToDatabase();
     queue = db.collection('queue');
     try {
-      const result = await queue.findOne({ userId: ObjectID(userId) });
+      const result = await queue.findOne({ userId: new ObjectId(userId) });
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });

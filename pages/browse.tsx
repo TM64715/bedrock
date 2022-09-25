@@ -35,7 +35,7 @@ export default function Browse() {
               control: (provided) => ({
                 ...provided,
                 width: 'max-content',
-                minWidth: '100%', 
+                minWidth: '100%',
               }),
               singleValue: (provided) => ({
                 ...provided,

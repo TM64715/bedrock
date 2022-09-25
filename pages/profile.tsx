@@ -4,7 +4,7 @@ import React, {
 import Image from 'next/image';
 import axios from 'axios';
 import Link from '@/components/link';
-import InputGroup from '@/components/inputGroup';
+import InputGroup from '@/components/form/inputGroup';
 import TxtAreaGroup from '../components/textareaGroup';
 import Button from '../components/button';
 import { useCurrentUser } from '../hooks/index';

@@ -1,8 +1,9 @@
-import { ObjectID } from 'mongodb';
+import { Collection, InsertOneResult, ObjectId } from 'mongodb';
 import { connectToDatabase } from '../util/db';
 import logger from '../util/logger';
+import Room from '../models/room';
 
-let rooms;
+let rooms: Collection<Room>;
 
 class roomsDAO {
   static async injectDB(conn) {
@@ -17,18 +18,16 @@ class roomsDAO {
     }
   }
 
-  static async create(data) {
+  static async create(
+    users: ObjectId[], meetingId: string, url: string, name: string, archived: 0 | 1 | 2,
+  ):Promise<{error:string, result:null} | {error:null, result:InsertOneResult<Room>}> {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
-    const {
-      users, meetingId, url, name, archived,
-    } = data;
-    if (!Array.isArray(users)) return { error: 'users must be an array', data: null };
+    const NewRoom = new Room(users, meetingId, url, name, archived);
+    if (!Array.isArray(users)) return { error: 'users must be an array', result: null };
     try {
-      const result = await rooms.insertOne({
-        users, meetingId, url, name, archived,
-      });
-      return ({ error: null, result: result.ops[0] });
+      const result = await rooms.insertOne(NewRoom);
+      return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });
     }
@@ -41,33 +40,35 @@ class roomsDAO {
         $match: {
           users: {
             $in: [
-              new ObjectID(userId),
+              new ObjectId(userId),
             ],
           },
         },
       },
     ];
     rooms = db.collection('rooms');
-    const stream = rooms.watch();
+    const stream = rooms.watch(pipeline);
     stream.on('change', (result) => {
-      logger.log('event reached');
+      logger.log('debug', 'event reached');
       callback({ result: result.fullDocument });
       process.nextTick(() => stream.close());
-    }, pipeline);
+    });
   }
 
   static async findById(id) {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
     try {
-      const result = await rooms.findOne({ _id: new ObjectID(id) });
+      const result = await rooms.findOne({ _id: new ObjectId(id) });
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });
     }
   }
 
-  static async setArchive({ roomId, archived, userId }) {
+  /* Archive 0 means that both people are present 1 means that only one person is
+  present and 2 means that no one is present */
+  static async setArchive(roomId: string, archived: 0 | 1 | 2, userId: string) {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
     console.log(archived);
@@ -75,9 +76,9 @@ class roomsDAO {
     try {
       const result = await rooms.updateOne(
         {
-          _id: new ObjectID(roomId),
+          _id: new ObjectId(roomId),
           users: {
-            $in: [new ObjectID(userId)],
+            $in: [new ObjectId(userId)],
           },
         },
         {
@@ -94,7 +95,7 @@ class roomsDAO {
     const { db } = await connectToDatabase();
     rooms = db.collection('rooms');
     try {
-      const result = await rooms.find({ users: { $in: [new ObjectID(userId)] }, ...search });
+      const result = await rooms.find({ users: { $in: [new ObjectId(userId)] }, ...search });
       const resultArr = await result.toArray();
       const count = await result.count();
       await result.close();

@@ -11,7 +11,7 @@ import logger from '../util/logger';
 let active = false;
 let iterations;
 async function worker() {
-  if (iterations > 50) {
+  if (iterations > 2) {
     logger.warn('infinite loop detected');
     process.exit(1);
   }
@@ -36,25 +36,28 @@ async function worker() {
     }
   });
   pairs = pairs.filter((room) => room.length === 2);
+  console.log(pairs);
   for (const room of pairs) {
     try {
       const { data: { url, id, name } } = await axios.post(`${process.env.VIDEO_API_URL}/rooms`, {
         properties: {
           exp: Math.floor(Date.now() / 1000) + 60 * 60,
+
         },
       }, {
         headers: {
           Authorization: `Bearer ${process.env.DAILY_API_KEY}`,
         },
       });
-      const { result: roomObj } = await roomsDAO.create({
-        users: [room[0].userId, room[1].userId],
-        meetingId: id,
+      const { result: { insertedId: roomId } } = await roomsDAO.create(
+        [room[0].userId, room[1].userId],
+        id,
         url,
         name,
-        archived: 0,
-        inProgress: false,
-      });
+        0,
+        false,
+      );
+      const { result: roomObj } = await roomsDAO.findById(roomId);
       RoomEmitter.emit('create', roomObj);
       const eventBatch = [];
       const channelName = 'private-match';
@@ -68,11 +71,12 @@ async function worker() {
         logger.log('warn', e.stack);
         logger.log('error', e);
       }
-      await queueDAO.remove(room[0].userId);
+      console.log(await queueDAO.remove(room[0].userId));
 
       await queueDAO.remove(room[1].userId);
     } catch (e) {
-      logger.log('warn', e);
+      logger.log('warn', e.toString());
+      return;
     }
 
     return worker();

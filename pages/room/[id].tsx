@@ -1,12 +1,12 @@
 import React, { useRef } from 'react';
-import DailyIframe from '@daily-co/daily-js';
+import DailyIframe, { DailyCall } from '@daily-co/daily-js';
 import axios from 'axios';
 import roomsDAO from '../../dao/roomsDAO';
 
 const Room = ({ room: { url, _id } }) => {
   const iframeRef = useRef();
-  const dailyRef = useRef();
-  const joinedRef = useRef();
+  const dailyRef = useRef<DailyCall>();
+  const joinedRef = useRef(false);
   const markArchive = (val) => {
     axios.put('/api/rooms/archive', {
       roomId: _id,
@@ -42,18 +42,22 @@ const Room = ({ room: { url, _id } }) => {
       if (joinedRef.current) {
         // This is needed due to it never returning
         // if there wasn't a meeting joined first...
-        await dailyRef.current.leave();
+        await dailyRef?.current.leave();
       }
       await dailyRef.current.join({ url });
     })();
   }, [url]);
   return (
-    <iframe
-      style={{ width: '100%', height: '100vh', border: 0 }}
-      title="video call iframe"
-      ref={iframeRef}
-      allow="camera; microphone; fullscreen"
-    />
+    <div className="bg-blue-500 dark:bg-gray-900">
+      <iframe
+        style={{
+          width: '100%', height: '100%', minHeight: '100vh', border: 0,
+        }}
+        title="video call iframe"
+        ref={iframeRef}
+        allow="camera; microphone; fullscreen"
+      />
+    </div>
   );
 };
 

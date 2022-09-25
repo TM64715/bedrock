@@ -2,7 +2,7 @@ import React, { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import Input from '../components/input';
+import Input from '../components/form/input';
 import Button from '../components/button';
 
 export default function Login() {
@@ -16,7 +16,7 @@ export default function Login() {
       const { data } = await axios.post('../../api/auth/login', { email, password });
 
       if (data.result) {
-        router.push('/browse');
+        router.push('/join');
       } else setError(data.error);
     } catch (err) {
       // Make sure that your env file is set up correctly

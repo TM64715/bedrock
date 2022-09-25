@@ -15,19 +15,18 @@ handler.use(all);
 handler.post(async (req, res) => {
   const {
     user: { _id: userId }, body: {
-      courseLevel, course, sessionLength, tags,
+      subject, course, level, goals,
     },
   } = req;
   // Make sure that the user is not already in a queue
   const { result: queueResult } = await queueDAO.findByUserId(userId);
   // If the user is already in a nonArchived room then return that room
   const { count } = await roomsDAO.findByUser(userId, { archived: { $lt: 2 } });
+  console.log(count);
   if (!queueResult && !(count > 0)) {
-    await queueDAO.insert({
-      userId, courseLevel, course, sessionLength, tags,
-    });
+    await queueDAO.insert(userId, subject, course, level, goals);
   }
   matchMaker();
-  res.status(200).send('OK');
+  res.send('OK');
 });
 export default handler;

@@ -21,7 +21,7 @@ handler.put(async (req, res) => {
       archived ? newNum = 2 : newNum = 1;
       break;
   }
-  const { error } = await roomsDAO.setArchive({ roomId, userId, archived: newNum });
+  const { error } = await roomsDAO.setArchive(roomId, newNum, userId);
   res.json({ error, result: newNum });
 });
 

@@ -2,7 +2,7 @@ import React, { FormEvent, useState } from 'react';
 import Link from '@/components/link';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import Input from '@/components/input';
+import Input from '@/components/form/input';
 import Button from '@/components/button';
 
 export default function Login() {

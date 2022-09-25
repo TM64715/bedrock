@@ -15,6 +15,7 @@ module.exports = {
     },
     ecmaVersion: 12,
     sourceType: 'module',
+
   },
   plugins: [
     'react',
@@ -41,6 +42,16 @@ module.exports = {
     ],
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
     'import/no-unresolved': 'error',
+    'jsx-a11y/label-has-associated-control': ['error', {
+      required: {
+        some: ['nesting', 'id'],
+      },
+    }],
+    'jsx-a11y/label-has-for': ['error', {
+      required: {
+        some: ['nesting', 'id'],
+      },
+    }],
   },
   settings: {
     'import/resolver': {
@@ -52,5 +63,12 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
+  },
+  globals: {
+    shallowWithRouter: true,
+    context: true,
+    expect: true,
+    jsdom: true,
+    JSX: true,
   },
 };
