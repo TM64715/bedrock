@@ -10,6 +10,13 @@ import logger from '../util/logger';
 
 let active = false;
 let iterations;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const propose = (user1, obj2) => {
+  const { holds, prefs } = obj2;
+  return !(prefs.indexOf(user1) > prefs.indexOf(holds));
+};
+
 async function worker() {
   if (iterations > 2) {
     logger.warn('infinite loop detected');
@@ -26,15 +33,34 @@ async function worker() {
     logger.debug('Found no documents');
     return;
   }
+  // const countQueue = result.length;
+  // const queuePrefs = {};
+  // for (const obj of result) {
+  //   const prefs = await queueDAO.kNearestNeighbor(obj.embedding, countQueue);
+  //   queuePrefs[obj._id.toString()] = { prefs: prefs.result, proposedTo: [], holds: null };
+  // }
+  // const setProposedTo = [];
+  // let nextChoice = queuePrefs[Object.keys(queuePrefs)[0]].prefs[0];
+  // let proposer;
+  // for (const [person, obj] of Object.entries(queuePrefs)) {
+  //   proposer = person;
+  //   nextChoice = obj.prefs[0];
+  //   while (setProposedTo.includes(nextChoice)) {
+  //     if (propose(proposer, queuePrefs[person]));
+  //   }
+  // }
+  // console.log(JSON.stringify(queuePrefs));
+  // return;
   let pairs = [];
-  result.forEach((qUser, i) => {
-    // if it's even push new index
-    if (i % 2 === 0) pairs.push([qUser]);
-    // else update an existing index
-    else {
-      pairs[(pairs.length - 1) / 2][1] = qUser;
-    }
-  });
+  const qUser = result[0];
+  // if it's even push new index
+  const { result: neighbor } = await queueDAO.kNearestNeighbor(qUser.embedding, 2);
+  if (neighbor.length > 1) {
+    pairs.push([qUser, neighbor[1]]);
+    await queueDAO.remove(neighbor[1].userId);
+    await queueDAO.remove(qUser.userId);
+  }
+
   pairs = pairs.filter((room) => room.length === 2);
   // eslint-disable-next-line no-console
   console.log(pairs);
@@ -72,7 +98,7 @@ async function worker() {
         logger.log('warn', e.stack);
         logger.log('error', e);
       }
-      console.log(await queueDAO.remove(room[0].userId));
+      await queueDAO.remove(room[0].userId);
 
       await queueDAO.remove(room[1].userId);
     } catch (e) {

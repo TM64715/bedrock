@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
 import Image from 'next/image';
 import Input from '@/components/form/input';
-import Checkbox from '@/components/form/checkbox';
+import Textarea from '@/components/textarea';
 import Button from '@/components/button';
 import axios from 'axios';
 import Pusher from 'pusher-js';
 import { useRouter } from 'next/router';
+import makeMatch from '../workers/matchmaker';
 
 import { all } from '../middleware';
 
@@ -39,11 +40,12 @@ export default function Join({ user }) {
   const subject = useRef<HTMLInputElement>(null);
   const cName = useRef<HTMLInputElement>(null);
   const level = useRef<HTMLInputElement>(null);
-  const concepts = useRef<HTMLInputElement>(null);
-  const verbal = useRef<HTMLInputElement>(null);
-  const writing = useRef<HTMLInputElement>(null);
-  const accountability = useRef<HTMLInputElement>(null);
-  const other = useRef<HTMLInputElement>(null);
+  // const concepts = useRef<HTMLInputElement>(null);
+  // const verbal = useRef<HTMLInputElement>(null);
+  // const writing = useRef<HTMLInputElement>(null);
+  // const accountability = useRef<HTMLInputElement>(null);
+  // const other = useRef<HTMLInputElement>(null);
+  const reason = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,19 +55,19 @@ export default function Join({ user }) {
     const levelV = level.current.value;
 
     // named [ref]Value to avoid conflict with the ref variable
-    const verbalV = verbal.current.checked;
-    const otherV = other.current.checked;
-    const accountabilityV = accountability.current.checked;
-    const writingV = writing.current.checked;
-    const goals = {
-      verbal: verbalV, accountability: accountabilityV, writing: writingV, other: otherV,
-    };
+    // const verbalV = verbal.current.checked;
+    // const otherV = other.current.checked;
+    // const accountabilityV = accountability.current.checked;
+    // const writingV = writing.current.checked;
+    // const goals = {
+    //   verbal: verbalV, accountability: accountabilityV, writing: writingV, other: otherV,
+    // };
     try {
       await axios.post('../api/match', {
         subject: subjectV,
         course: courseV,
         level: levelV,
-        goals,
+        reason: reason.current.value,
       });
     } catch (reqError) {
       // console.error(reqError);
@@ -95,14 +97,8 @@ export default function Join({ user }) {
           <div className="flex justify-center">
             <Input type="text" id="location" placeholder="Level" passRef={level} />
           </div>
-          <div className="block mx-auto">
-            <div className="flex flex-col space-y-3 md:space-y-5">
-              <Checkbox label="Get help with concepts" id="concepts" passRef={concepts} />
-              <Checkbox label="Get quizzed/Study Verbally" id="concepts" passRef={verbal} />
-              <Checkbox label="Go over writing" id="writing" passRef={writing} />
-              <Checkbox label="Create accountability for myself" id="accountability" passRef={accountability} />
-              <Checkbox label="Other" id="other" passRef={other} />
-            </div>
+          <div className="flex justify-center h-full">
+            <Textarea passRef={reason} placeholder="What are your goals for this session" />
           </div>
           <div className="flex justify-center">
             <Button type="submit" variant="primary" onClick={handleSubmit}>Go</Button>
@@ -117,6 +113,7 @@ export default function Join({ user }) {
 
 export async function getServerSideProps(context) {
   await all.run(context.req, context.res);
+  makeMatch();
   if (!context.req.isAuthenticated()) {
     return {
       redirect: {

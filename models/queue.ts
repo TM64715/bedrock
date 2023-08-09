@@ -5,16 +5,14 @@ export default class Queue {
     public userId: ObjectId,
     public course: string,
     public subject: string,
-    public goals: {
-      accountability: boolean,
-      writing: boolean,
-      verbal: boolean,
-      other: boolean,
-    },
+    public reason: string,
+    public embedding: number[],
+    public _id?: ObjectId,
   ) {
     this.userId = userId;
     this.course = course;
     this.subject = subject;
-    this.goals = goals;
+    this.reason = reason;
+    this.embedding = embedding;
   }
 }

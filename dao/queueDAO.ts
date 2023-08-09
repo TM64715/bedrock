@@ -18,10 +18,10 @@ export default class queueDAO {
     }
   }
 
-  static async insert(userId: Queue['userId'], course: Queue['course'], subject: Queue['subject'], goals: Queue['goals']) {
+  static async insert(userId: Queue['userId'], course: Queue['course'], subject: Queue['subject'], reason: Queue['reason'], embedding: Queue['embedding']) {
     const { db } = await connectToDatabase();
     queue = db.collection('queue');
-    const NewQueue = new Queue(new ObjectId(userId), course, subject, goals);
+    const NewQueue = new Queue(new ObjectId(userId), course, subject, reason, embedding);
     try {
     // Destructure data to ensure no unwanted fields;
       const result = await queue.insertOne(NewQueue);
@@ -70,6 +70,28 @@ export default class queueDAO {
       return ({ error: null, result });
     } catch (e) {
       return ({ error: e.toString(), result: null });
+    }
+  }
+
+  static async kNearestNeighbor(embedding: number[], k:number):Promise<{result?: {_id: Queue['_id'], userId: Queue['userId']}[], error?: string}> {
+    const { db } = await connectToDatabase();
+    queue = db.collection('queue');
+    try {
+      const result = await queue.aggregate<{_id: Queue['_id'], userId: Queue['userId']}>([{
+        $search: {
+          index: 'default',
+          knnBeta: {
+            vector: embedding,
+            path: 'embedding',
+            k,
+          },
+        },
+      }]).project<{_id: Queue['_id'], userId: Queue['userId']}>({ userId: true }).toArray();
+
+      return { error: null, result };
+    } catch (e) {
+      console.log(e.toString());
+      return { result: null, error: e.toString() };
     }
   }
 }
