@@ -1,7 +1,6 @@
 /*
   When a request comes to the server it is
  */
-
 import nc from 'next-connect';
 import queueDAO from '../../../dao/queueDAO';
 import roomsDAO from '../../../dao/roomsDAO';

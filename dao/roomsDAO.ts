@@ -33,27 +33,27 @@ class roomsDAO {
     }
   }
 
-  static async watchUser(userId, callback) {
-    const { db } = await connectToDatabase();
-    const pipeline = [
-      {
-        $match: {
-          users: {
-            $in: [
-              new ObjectId(userId),
-            ],
-          },
-        },
-      },
-    ];
-    rooms = db.collection('rooms');
-    const stream = rooms.watch(pipeline);
-    stream.on('change', (result) => {
-      logger.log('debug', 'event reached');
-      callback({ result: result.fullDocument });
-      process.nextTick(() => stream.close());
-    });
-  }
+  // static async watchUser(userId, callback) {
+  //   const { db } = await connectToDatabase();
+  //   const pipeline = [
+  //     {
+  //       $match: {
+  //         users: {
+  //           $in: [
+  //             new ObjectId(userId),
+  //           ],
+  //         },
+  //       },
+  //     },
+  //   ];
+  //   rooms = db.collection('rooms');
+  //   const stream = rooms.watch(pipeline);
+  //   stream.on('change', (result) => {
+  //     logger.log('debug', 'event reached');
+  //     callback({ result: result.fullDocument });
+  //     process.nextTick(() => stream.close());
+  //   });
+  // }
 
   static async findById(id) {
     const { db } = await connectToDatabase();

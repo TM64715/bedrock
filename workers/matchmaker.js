@@ -55,6 +55,7 @@ async function worker() {
   const qUser = result[0];
   // if it's even push new index
   const { result: neighbor } = await queueDAO.kNearestNeighbor(qUser.embedding, 2);
+  logger.debug(neighbor.length);
   if (neighbor.length > 1) {
     pairs.push([qUser, neighbor[1]]);
     await queueDAO.remove(neighbor[1].userId);
