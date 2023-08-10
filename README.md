@@ -1,21 +1,23 @@
-# Custom Express Server example
+ENV File
 
-Most of the time the default Next.js server will be enough but there are times you'll want to run your own server to integrate into an existing application. Next.js provides [a custom server api](https://nextjs.org/docs/advanced-features/custom-server).
+BEDROCK_DB_URI=**I send u access**  
 
-Because the Next.js server is a Node.js module you can combine it with any other part of the Node.js ecosystem. In this case we are using express.
+BEDROCK_NS=bedrock  
 
-## Preview
+SESSION_SECRET=**YOU CHOOSE**  
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+VIDEO_API_URL=https://api.daily.co/v1  
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/custom-server-express?runScript=dev)
+DAILY_API_KEY=**password**  
 
-## How to use
+PUSHER_APP_ID=1229965  
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+NEXT_PUBLIC_PUSHER_KEY=7b6b21bd14072dbacc0b  
 
-```bash
-npx create-next-app --example custom-server-express custom-server-express-app
-# or
-yarn create next-app --example custom-server-express custom-server-express-app
-```
+PUSHER_SECRET=**secret**  
+
+NEXT_PUBLIC_PUSHER_CLUSTER=us2  
+
+CLOUDINARY_URL=**Make one? idk u prolly don't need**  
+
+OPENAI_API_KEY=**use your own**
