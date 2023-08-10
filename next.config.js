@@ -11,5 +11,17 @@ module.exports = {
   images: {
     domains: ['res.cloudinary.com'],
   },
-
+  async headers() {
+    return [
+      {
+        source: '/api/match',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, max-age=0',
+          },
+        ],
+      },
+    ];
+  },
 };
